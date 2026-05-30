@@ -2,12 +2,15 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION      = 'ap-south-1'
-        ECR_REPO        = '354918370166.dkr.ecr.ap-south-1.amazonaws.com/cicd-eks-app'
-        IMAGE_TAG       = "${BUILD_NUMBER}"
-        CLUSTER_NAME    = 'cicd-cluster'
-        SONAR_URL       = 'http://localhost:9000/'
-    }
+    AWS_REGION            = 'ap-south-1'
+    ECR_REPO              = '354918370166.dkr.ecr.ap-south-1.amazonaws.com/cicd-eks-app'
+    IMAGE_TAG             = "${BUILD_NUMBER}"
+    CLUSTER_NAME          = 'cicd-cluster'
+    SONAR_URL             = 'http://localhost:9000'
+    SONAR_TOKEN           = credentials('sonar-token')
+    AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+}
 
     stages {
 
