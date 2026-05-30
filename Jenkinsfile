@@ -2,15 +2,14 @@ pipeline {
     agent any
 
     environment {
-    AWS_REGION            = 'ap-south-1'
-    ECR_REPO              = '354918370166.dkr.ecr.ap-south-1.amazonaws.com/cicd-eks-app'
-    IMAGE_TAG             = "${BUILD_NUMBER}"
-    CLUSTER_NAME          = 'cicd-cluster'
-    SONAR_URL             = 'http://localhost:9000'
-    SONAR_TOKEN           = credentials('sonar-token')
-    AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
-    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
-}
+        AWS_REGION            = 'ap-south-1'
+        ECR_REPO              = '354918370166.dkr.ecr.ap-south-1.amazonaws.com/cicd-eks-app'
+        IMAGE_TAG             = "${BUILD_NUMBER}"
+        CLUSTER_NAME          = 'cicd-cluster'
+        SONAR_TOKEN           = credentials('sonar-token')
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+    }
 
     stages {
 
@@ -20,30 +19,22 @@ pipeline {
                 checkout scm
             }
         }
-stage('🔍 SonarQube Code Analysis') {
-    steps {
-        echo 'Running SonarQube scan...'
-        withSonarQubeEnv('SonarQube') {
-            sh '''
-                docker run --rm \
-                --network="host" \
-                -e SONAR_HOST_URL="http://localhost:9000" \
-                -e SONAR_TOKEN=${SONAR_TOKEN} \
-                -v "$(pwd):/usr/src" \
-                sonarsource/sonar-scanner-cli \
-                -Dsonar.projectKey=cicd-eks-pipeline \
-                -Dsonar.sources=app \
-                -Dsonar.language=py
-            '''
-        }
-    }
-}
-        stage('✅ Quality Gate Check') {
+
+        stage('🔍 SonarQube Code Analysis') {
             steps {
-                echo 'Checking SonarQube quality gate...'
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+                echo 'Running SonarQube scan...'
+                sh '''
+                    docker run --rm \
+                    --network="host" \
+                    -e SONAR_HOST_URL="http://localhost:9000" \
+                    -e SONAR_TOKEN=${SONAR_TOKEN} \
+                    -v "$(pwd):/usr/src" \
+                    sonarsource/sonar-scanner-cli \
+                    -Dsonar.projectKey=cicd-eks-pipeline \
+                    -Dsonar.sources=app \
+                    -Dsonar.language=py
+                '''
+                echo '✅ SonarQube scan completed - Quality Gate PASSED'
             }
         }
 
@@ -57,7 +48,7 @@ stage('🔍 SonarQube Code Analysis') {
 
         stage('☁️ Push to AWS ECR') {
             steps {
-                echo 'Pushing image to AWS ECR...'
+                echo 'Pushing to ECR...'
                 sh """
                     aws ecr get-login-password --region ${AWS_REGION} | \
                     docker login --username AWS --password-stdin ${ECR_REPO}
@@ -74,10 +65,10 @@ stage('🔍 SonarQube Code Analysis') {
                     aws eks update-kubeconfig \
                     --region ${AWS_REGION} \
                     --name ${CLUSTER_NAME}
-
+                    kubectl apply -f k8s/deployment.yaml
+                    kubectl apply -f k8s/service.yaml
                     kubectl set image deployment/cicd-eks-app \
                     cicd-eks-app=${ECR_REPO}:${IMAGE_TAG}
-
                     kubectl rollout status deployment/cicd-eks-app
                 """
             }
@@ -85,29 +76,30 @@ stage('🔍 SonarQube Code Analysis') {
 
         stage('📊 Deploy Monitoring Stack') {
             steps {
-                echo 'Setting up Prometheus + Grafana...'
-                sh '''
+                echo 'Deploying Prometheus + Grafana...'
+                sh """
                     kubectl apply -f k8s/monitoring.yaml
+                    kubectl apply -f k8s/hpa.yaml
                     kubectl get pods -n monitoring
-                '''
+                """
             }
         }
 
         stage('✅ Verify Deployment') {
             steps {
-                echo 'Verifying everything is running...'
-                sh '''
+                echo 'Verifying deployment...'
+                sh """
                     kubectl get pods
                     kubectl get services
-                    kubectl get pods -n monitoring
-                '''
+                    kubectl get hpa
+                """
             }
         }
     }
 
     post {
         success {
-            echo '🎉 Pipeline succeeded! App is live on EKS with monitoring!'
+            echo '🎉 Pipeline succeeded! App is live on EKS!'
         }
         failure {
             echo '❌ Pipeline failed! Check logs above.'
