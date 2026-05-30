@@ -1,0 +1,30 @@
+cd ~/Documents/cicd-eks-pipeline
+
+cat > .gitignore << 'EOF'
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Binary files
+kubectl
+kubectl.exe
+
+# AWS
+.aws/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+
+# OS
+.DS_Store
+*.log
+EOF
