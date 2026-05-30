@@ -20,21 +20,22 @@ pipeline {
                 checkout scm
             }
         }
-
-       stage('🔍 SonarQube Code Analysis') {
+stage('🔍 SonarQube Code Analysis') {
     steps {
         echo 'Running SonarQube scan...'
-        sh '''
-            docker run --rm \
-            --network="host" \
-            -e SONAR_HOST_URL="http://localhost:9000" \
-            -e SONAR_TOKEN=$SONAR_TOKEN \
-            -v "$(pwd):/usr/src" \
-            sonarsource/sonar-scanner-cli \
-            -Dsonar.projectKey=cicd-eks-pipeline \
-            -Dsonar.sources=app \
-            -Dsonar.language=py
-        '''
+        withSonarQubeEnv('SonarQube') {
+            sh '''
+                docker run --rm \
+                --network="host" \
+                -e SONAR_HOST_URL="http://localhost:9000" \
+                -e SONAR_TOKEN=${SONAR_TOKEN} \
+                -v "$(pwd):/usr/src" \
+                sonarsource/sonar-scanner-cli \
+                -Dsonar.projectKey=cicd-eks-pipeline \
+                -Dsonar.sources=app \
+                -Dsonar.language=py
+            '''
+        }
     }
 }
         stage('✅ Quality Gate Check') {
