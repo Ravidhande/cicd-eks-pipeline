@@ -4,8 +4,8 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return '''
-    <h1>🚀 CI/CD Pipeline Live! This is testing of pipeline live!</h1>
-    <p>Deployed via Jenkins → Docker → AWS EKS</p>
+    <h1>🚀 CI/CD Pipeline Live! This is testing of pipeline live! checking the live pipeline </h1>
+    <p>Sucessfully Deployed via Jenkins → Docker → AWS EKS</p>
     <p>Built by Ravi Dhande | Cloud Engineer </p>
     '''
 
