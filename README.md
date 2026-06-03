@@ -325,12 +325,18 @@ HPA (Auto Scaling):
 ## 📸 Screenshots
 
 > Add your screenshots here:
-> - Jenkins pipeline all green stages
-> - SonarQube Quality Gate PASSED
-> - kubectl get pods (all Running)
-> - App live in browser
-> - Grafana dashboard with metrics
-> - AWS ECR showing Docker images
+> - <img width="1917" height="911" alt="Screenshot from 2026-05-30 19-38-29" src="https://github.com/user-attachments/assets/f3c722a9-420b-4e80-af9b-50408ef70e72" />
+
+> - <img width="1920" height="1080" alt="Screenshot from 2026-05-30 14-57-30" src="https://github.com/user-attachments/assets/74642621-9958-4a79-8b55-362969c33030" />
+
+> - <img width="1906" height="362" alt="Screenshot from 2026-05-30 17-57-45" src="https://github.com/user-attachments/assets/3c981e8b-2f9e-434f-969f-427204758177" />
+
+> - <img width="1920" height="1080" alt="Screenshot from 2026-05-30 19-45-16" src="https://github.com/user-attachments/assets/0e409a5d-ae6a-4932-9501-c77b7d3a4523" />
+
+> - <img width="1920" height="1080" alt="Screenshot from 2026-05-30 15-06-20" src="https://github.com/user-attachments/assets/da864c79-0db6-4853-b7d5-7a8645f7480c" />
+
+> - <img width="1920" height="1080" alt="Screenshot from 2026-05-30 15-02-16" src="https://github.com/user-attachments/assets/9a8ae80a-82a2-4faa-8303-1c7fe8dcaefa" />
+
 
 ---
 
@@ -339,7 +345,7 @@ HPA (Auto Scaling):
 **Ravi Dhande**
 AWS Certified Cloud Engineer | DevOps Enthusiast
 
-- 🔗 LinkedIn: [your-linkedin-url]
+- 🔗 LinkedIn: [www.linkedin.com/in/ravi-dhande
 - 💻 GitHub: [github.com/Ravidhande](https://github.com/Ravidhande)
 - 📧 Email: dhanderavi32@gmail.com
 - 🏆 AWS Certified Cloud Practitioner
